@@ -56,7 +56,7 @@ fi
 
 # setup for local rust
 if [ -d "$HOME/.cargo/bin" ]; then
-	export PATH="$HOME/.cargo/bin;$PATH"
+	export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
 # setup for cheat
