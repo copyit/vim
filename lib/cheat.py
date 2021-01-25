@@ -151,7 +151,7 @@ class CheatUtils (object):
                 sys.stdout.write("\033[0m")
                 sys.stdout.flush()
         return 0
-    
+
 
 #----------------------------------------------------------------------
 # local utils
@@ -170,7 +170,7 @@ class CheatSheets (object):
     def __init__ (self):
         self.site_sheets = utils.search_cheat()
         self.cheats_dict = None
-    
+
     def user_dir (self):
 
         """ Returns the default cheatsheet path """
@@ -566,7 +566,7 @@ def getopt (argv):
 def main(args = None):
 
     args = [ n for n in (args and args or sys.argv) ]
-    
+
     if len(args) < 2:
         usage()
         return 0
@@ -582,7 +582,7 @@ def main(args = None):
     if word == '?':
         options = {'q':1}
         argv = argv[1:]
-    
+
     if 'd' in options or 'directories' in options:
         print("\n".join(cheatsheets.paths()))
 
@@ -651,7 +651,7 @@ if __name__ == '__main__':
         print(cheatsheets.user_dir())
         import pprint
         pprint.pprint(cheatsheets.get())
-        return 0    
+        return 0
 
     def test3():
         print(cheatsheet.read('linux'))
