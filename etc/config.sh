@@ -59,11 +59,6 @@ if [ -d "$HOME/.cargo/bin" ]; then
 	export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
-# setup for cheat
-if [ -d "$HOME/.vim/vim/cheat" ]; then
-	export CHEAT_USER_DIR=~/.vim/vim/cheat
-fi
-
 # setup for ~/bin
 if [ -d "$HOME/bin" ]; then
 	export PATH="$HOME/bin:$PATH"
