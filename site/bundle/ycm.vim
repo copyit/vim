@@ -13,7 +13,7 @@ let g:ycm_disable_signature_help = 1
 set completeopt=menu,menuone
 
 if has('patch-8.0.1000')
-	set completeopt=menu,menuone,noselect
+	set completeopt+=noselect
 endif
 
 " noremap <c-z> <NOP>
