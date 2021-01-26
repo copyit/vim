@@ -9,6 +9,10 @@
 
 let s:keymaps = '123456789abcdefimnopqrstuvwxyz'
 
+function! MenuHelp_PlugEvent(event)
+	exec "normal \<plug>(" . a:event . ")"
+endfunc
+
 function! MenuHelp_FormatJson()
 	exec "%!python -m json.tool"
 endfunc

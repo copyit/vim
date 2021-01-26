@@ -194,6 +194,7 @@ let g:context_menu_k = [
 			\ [ "--", ],
 			\ [ "Goto D&efinition\t(YCM)", 'YcmCompleter GoToDefinitionElseDeclaration'],
 			\ [ "Goto &References\t(YCM)", 'YcmCompleter GoToReferences'],
+			\ [ "Cursor Ho&ver\t(YCM)", 'exec "normal \<plug>(YCMHover)"'],
 			\ [ "Get D&oc\t(YCM)", 'YcmCompleter GetDoc'],
 			\ [ "Get &Type\t(YCM)", 'YcmCompleter GetTypeImprecise'],
 			\ [ "--", ],

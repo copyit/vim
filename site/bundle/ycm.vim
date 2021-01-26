@@ -16,7 +16,11 @@ if has('patch-8.0.1000')
 	set completeopt+=noselect
 endif
 
-" noremap <c-z> <NOP>
+if exists('+completepopup')
+	set completepopup=align:menu,border:off,highlight:WildMenu
+	set completepopup=align:menu,border:off,highlight:QuickPreview
+endif
+
 
 let g:ycm_semantic_triggers =  {
 			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -24,6 +28,14 @@ let g:ycm_semantic_triggers =  {
 			\ }
 
 let g:ycm_goto_buffer_command = 'new-or-existing-tab'
+
+
+"----------------------------------------------------------------------
+" keymaps
+"----------------------------------------------------------------------
+
+nmap <leader>D <plug>(YCMHover)
+" noremap <c-z> <NOP>
 
 
 "----------------------------------------------------------------------
