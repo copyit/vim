@@ -260,3 +260,22 @@ function! asclib#utils#get_bg_colors(group) abort
 endfunc
 
 
+"----------------------------------------------------------------------
+" open url in browser
+"----------------------------------------------------------------------
+function! asclib#utils#open_url(url, browser)
+	let url = escape(fnameescape(a:url), "%|*#")
+	let browser = get(g:, 'asclib_browser', '')
+	let browser = (a:browser != '')? (a:browser) : browser
+	if has('win32') || has('win64') || has('win16') || has('win95')
+		silent exec '!start /b start ' . browser . ' ' . url
+	elseif has('mac') || has('macunix') || has('gui_macvim')
+		let browser = (browser == '')? 'open' : browser
+		call system(browser . ' ' . url . ' &')
+	else
+		let browser = (browser == '')? 'xdg-open' : browser
+		call system(browser . ' ' . url . ' &')
+	endif
+endfunc
+
+
