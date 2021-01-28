@@ -265,7 +265,7 @@ endfunc
 "----------------------------------------------------------------------
 function! asclib#utils#open_url(url, browser)
 	let url = escape(fnameescape(a:url), "%|*#")
-	let browser = get(g:, 'asclib_browser', '')
+	let browser = get(g:, 'asc_browser', '')
 	let browser = (a:browser != '')? (a:browser) : browser
 	if has('win32') || has('win64') || has('win16') || has('win95')
 		silent exec '!start /b start ' . browser . ' ' . url
