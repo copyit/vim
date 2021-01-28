@@ -1021,7 +1021,7 @@ function! s:PlugBrowse()
 		echo 'error: filetype is not vim'
 		return
 	endif
-	let t = matchstr(getline('.'), '^\s*Plug\s*''\zs.*\ze''')
+	let t = matchstr(getline('.'), '^\s*Plug\s*''\zs\(.\{-}\)*\ze''')
 	if t != ''
 		let url = 'https://github.com/' . t
 		call asclib#utils#open_url(url, '')
