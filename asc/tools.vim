@@ -1025,6 +1025,8 @@ function! s:PlugBrowse()
 	if t != ''
 		let url = 'https://github.com/' . t
 		call asclib#utils#open_url(url, '')
+	else
+		echo 'error: not find Plug ''xxx'' pattern'
 	endif
 endfunc
 
