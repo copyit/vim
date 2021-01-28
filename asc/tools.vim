@@ -1023,7 +1023,8 @@ function! s:PlugBrowse()
 	endif
 	let t = matchstr(getline('.'), '^\s*Plug\s*''\zs.*\ze''')
 	if t != ''
-		exec "!start /b start " . fnameescape('https://github.com/' . t)
+		let url = 'https://github.com/' . t
+		call asclib#utils#open_url(url, '')
 	endif
 endfunc
 
