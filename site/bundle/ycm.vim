@@ -10,6 +10,8 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_complete_in_strings=1
 let g:ycm_key_invoke_completion = '<c-z>'
 let g:ycm_disable_signature_help = 1
+let g:ycm_auto_hover = ''
+
 set completeopt=menu,menuone
 
 if has('patch-8.0.1000')
@@ -44,7 +46,6 @@ nmap <leader>D <plug>(YCMHover)
 " let g:ycm_global_ycm_extra_conf = 'd:/dev/vim/ycm_extra_conf.py'
 
 " remove auto hover
-let g:ycm_auto_hover = ''
 
 
 "----------------------------------------------------------------------
