@@ -1013,3 +1013,20 @@ endfunc
 command! -nargs=1 LineBreaker call s:LineBreaker(<q-args>)
 
 
+"----------------------------------------------------------------------
+" browse plugin homepage
+"----------------------------------------------------------------------
+function! s:PlugBrowse()
+	if &ft != 'vim'
+		echo 'error: filetype is not vim'
+		return
+	endif
+	let t = matchstr(getline('.'), '^\s*Plug\s*''\zs.*\ze''')
+	if t != ''
+		exec "!start /b start " . fnameescape('https://github.com/' . t)
+	endif
+endfunc
+
+command! -nargs=0 PlugBrowse call s:PlugBrowse()
+
+
