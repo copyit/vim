@@ -126,3 +126,6 @@ let g:Lf_Extensions.task = {
 " let g:Lf_WindowPosition='bottom'
 " echo s:lf_task_source()
 
+
+let g:Lf_PreviewInPopup = 1
+
