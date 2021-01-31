@@ -152,9 +152,6 @@ if index(g:bundle_group, 'inter') >= 0
 	" Plug 'wsdjeg/FlyGrep.vim'
 	" Plug 'tpope/vim-abolish'
 	Plug 'honza/vim-snippets'
-	Plug 'MarcWeber/vim-addon-mw-utils'
-	Plug 'tomtom/tlib_vim'
-	Plug 'garbas/vim-snipmate'
 	" Plug 'vim-scripts/FuzzyFinder'
 	" Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 	Plug 'xolox/vim-notes', { 'on': ['Note', 'SearchNotes', 'DeleteNotes', 'RecentNotes'] }
@@ -170,15 +167,20 @@ if index(g:bundle_group, 'inter') >= 0
 	endif
 	" Plug 'Yggdroot/indentLine'
 
-	if has('python3') || has('python')
-		" Plug 'SirVer/ultisnips'
+	if 0 || (has('python3') == 0 && has('python') == 0)
+		Plug 'MarcWeber/vim-addon-mw-utils'
+		Plug 'tomtom/tlib_vim'
+		Plug 'garbas/vim-snipmate'
+		IncScript site/bundle/snipmate.vim
+	else
+		Plug 'SirVer/ultisnips'
+		IncScript site/bundle/ultisnips.vim
 	endif
 
 	if !isdirectory(expand('~/.vim/notes'))
 		silent! call mkdir(expand('~/.vim/notes'), 'p')
 	endif
 
-	IncScript site/bundle/snipmate.vim
 endif
 
 
