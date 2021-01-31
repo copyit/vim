@@ -10,4 +10,3 @@ let g:UltiSnipsSnippetDirectories=['UltiSnips', s:home."/usnip"]
 let g:snips_author = 'skywind'
 
 
-
