@@ -83,7 +83,11 @@ function! s:lf_snippet_accept(line, arg)
 	redraw
 	if name != ''
 		let s:accept = name . "\<Plug>snipMateTrigger"
-		exec "normal a" . name . "\<Plug>snipMateTrigger"
+		if mode(1) =~ 'i'
+			call feedkeys(name . "\<Plug>snipMateTrigger", '!')
+		else
+			call feedkeys('a' . name . "\<Plug>snipMateTrigger", '!')
+		endif
 	endif
 endfunc
 
