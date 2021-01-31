@@ -52,6 +52,7 @@ endfunc
 "----------------------------------------------------------------------
 let s:bufid = -1
 let s:filetype = ''
+let s:accept = ''
 let s:snips = {}
 let g:Lf_Extensions = get(g:, 'Lf_Extensions', {})
 
@@ -81,8 +82,8 @@ function! s:lf_snippet_accept(line, arg)
 	let name = substitute(name, '^\s*\(.\{-}\)\s*$', '\1', '')
 	redraw
 	if name != ''
-		" exec "normal a" . name . "\<m-e>"
-		call feedkeys("a" . name . "\<m-e>", "t")
+		let s:accept = name . "\<m-e>"
+		call feedkeys('a ' . name . "\<m-e>", 't')
 	endif
 endfunc
 
@@ -138,5 +139,10 @@ let g:Lf_Extensions.snippet = {
 let g:Lf_PreviewResult = get(g:, 'Lf_PreviewResult', {})
 let g:Lf_PreviewResult.snippet = 1
 
+function! LeaderfSnippet() abort
+	let s:accept = ''
+	Leaderf snippet
+endfunc
 
+inoremap <c-\><c-\> <c-\><c-o>:call LeaderfSnippet()<cr>
 
