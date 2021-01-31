@@ -82,8 +82,8 @@ function! s:lf_snippet_accept(line, arg)
 	let name = substitute(name, '^\s*\(.\{-}\)\s*$', '\1', '')
 	redraw
 	if name != ''
-		let s:accept = name . "\<m-e>"
-		call feedkeys('a ' . name . "\<m-e>", 't')
+		let s:accept = name . "\<Plug>snipMateTrigger"
+		exec "normal a" . name . "\<Plug>snipMateTrigger"
 	endif
 endfunc
 
@@ -139,10 +139,7 @@ let g:Lf_Extensions.snippet = {
 let g:Lf_PreviewResult = get(g:, 'Lf_PreviewResult', {})
 let g:Lf_PreviewResult.snippet = 1
 
-function! LeaderfSnippet() abort
-	let s:accept = ''
-	Leaderf snippet
-endfunc
 
-inoremap <c-\><c-\> <c-\><c-o>:call LeaderfSnippet()<cr>
+inoremap <c-\><c-\> <c-\><c-o>:Leaderf snippet<cr>
+
 
