@@ -167,7 +167,7 @@ if index(g:bundle_group, 'inter') >= 0
 	endif
 	" Plug 'Yggdroot/indentLine'
 
-	if 0 || (has('python3') == 0 && has('python') == 0)
+	if get(g:, 'asc_usnip', 0) == 0 || (has('python3') == 0 && has('python') == 0)
 		Plug 'MarcWeber/vim-addon-mw-utils'
 		Plug 'tomtom/tlib_vim'
 		Plug 'garbas/vim-snipmate'
