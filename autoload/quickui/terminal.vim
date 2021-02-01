@@ -260,7 +260,12 @@ endfunc
 "----------------------------------------------------------------------
 function! quickui#terminal#dialog(cmd, title, w, h, ...)
 	let opts = {}
-	if a:w > 0
+	let w = 0
+	let h = 0
+	if type(a:w) == v:t_float
+		if a:w <= 1
+			let w = 
+	if w > 0
 		if w + 2 > &columns
 			return -1
 		endif
