@@ -87,7 +87,9 @@ endfunc
 " reposition text offset
 "----------------------------------------------------------------------
 function! quickui#listbox#reposition()
-	exec 'normal! zz'
+	if mode() != 'i'
+		exec 'normal! zz'
+	endif
 	let height = winheight(0)
 	let size = line('$')
 	let curline = line('.')
