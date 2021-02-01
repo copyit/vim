@@ -7,9 +7,6 @@ function! SnipMateQuery(word, exact) abort
 	let size = 4
 	for [trigger, dict] in matches
 		let body = ''
-		if trigger =~ '^\u'
-			continue
-		endif
 		for key in keys(dict)
 			let value = dict[key]
 			if type(value) == v:t_list
@@ -36,13 +33,13 @@ endfunc
 "----------------------------------------------------------------------
 " Simplify Snippet Body
 "----------------------------------------------------------------------
-function! SnipMateDescription(body) abort
-	let text = join(split(a:body, '\n')[:3], ' ; ')
+function! SnipMateDescription(body, width) abort
+	let text = join(split(a:body, '\n')[:4], ' ; ')
 	let text = substitute(text, '^\s*\(.\{-}\)\s*$', '\1', '')
-	let text = strcharpart(text, 0, 80)
 	let text = substitute(text, '\${[^{}]*}', '...', 'g')
 	let text = substitute(text, '\${[^{}]*}', '...', 'g')
 	let text = substitute(text, '\s\+', ' ', 'g')
+	let text = strcharpart(text, 0, a:width)
 	return text
 endfunc
 
@@ -61,10 +58,15 @@ function! s:lf_snippet_source(...)
 	let source = []
 	let matches = SnipMateQuery('', 0)
 	let snips = {}
+	let width = 100
 	for item in matches
-		let desc = SnipMateDescription(item[1])
+		let trigger = item[0]
+		if trigger =~ '^\u'
+			continue
+		endif
+		let desc = SnipMateDescription(item[1], width)
 		let text = item[2] . ' ' . ' : ' . desc
-		let snips[item[0]] = item[1]
+		let snips[trigger] = item[1]
 		let source += [text]
 	endfor
 	let s:snips = snips
