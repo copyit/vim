@@ -88,15 +88,15 @@ function! asclib#python#system(command)
 		return text
 	else
 		exec s:py_cmd 'import subprocess, vim'
-		exec s:py_cmd 'argv = {"args": vim.eval("a:command")}'
-		exec s:py_cmd 'argv["shell"] = True'
-		exec s:py_cmd 'argv["stdout"] = subprocess.PIPE'
-		exec s:py_cmd 'argv["stderr"] = subprocess.STDOUT'
-		exec s:py_cmd 'p = subprocess.Popen(**argv)'
-		exec s:py_cmd 'text = p.stdout.read()'
-		exec s:py_cmd 'code = p.wait()'
-		let g:asclib#python#shell_error = asclib#python#eval('code')
-		return asclib#python#eval('text')
+		exec s:py_cmd '__argv = {"args": vim.eval("a:command")}'
+		exec s:py_cmd '__argv["shell"] = True'
+		exec s:py_cmd '__argv["stdout"] = subprocess.PIPE'
+		exec s:py_cmd '__argv["stderr"] = subprocess.STDOUT'
+		exec s:py_cmd '__pp = subprocess.Popen(**__argv)'
+		exec s:py_cmd '__return_text = __pp.stdout.read()'
+		exec s:py_cmd '__return_code = __pp.wait()'
+		let g:asclib#python#shell_error = asclib#python#eval('__return_code')
+		return asclib#python#eval('__return_text')
 	endif
 endfunc
 
