@@ -106,7 +106,7 @@ let g:asc_gui = 0
 
 if has('gui_running')
 	let g:asc_gui = 1
-if has('nvim')
+elseif has('nvim')
 	if exists('g:GuiLoaded')
 		if g:GuiLoaded != 0
 			let g:asc_gui = 1
