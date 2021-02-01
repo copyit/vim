@@ -20,14 +20,14 @@ let s:py_eval = ''
 let s:py_version = 0
 
 if g:asclib#python#version == 0
-	if has('python')
-		let s:py_cmd = 'py'
-		let s:py_eval = 'pyeval'
-		let s:py_version = 2
-	elseif has('python3')
+	if has('python3')
 		let s:py_cmd = 'py3'
 		let s:py_eval = 'py3eval'
 		let s:py_version = 3
+	elseif has('python')
+		let s:py_cmd = 'py'
+		let s:py_eval = 'pyeval'
+		let s:py_version = 2
 	else
 		call asclib#common#errmsg('vim does not support +python/+python3 feature')
 	endif
