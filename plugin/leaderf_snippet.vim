@@ -52,11 +52,12 @@ function! UltiSnipsQuery()
 	let list = []
 	let size = 4
 	for [key, info] in items(g:current_ulti_dict_info)
-		if info.description == ''
-			continue
+		let desc = info.description
+		if desc == ''
+			let desc = '...'
 		endif
 		let size = max([size, len(key)])
-		let list += [[key, info.description]]
+		let list += [[key, desc]]
 	endfor
 	call sort(list)
 	for item in list
@@ -127,7 +128,10 @@ function! s:lf_snippet_accept(line, arg)
 			endif
 		else
 			if mode(1) =~ 'i'
+				call feedkeys("\<right>", '!')
+				" call feedkeys("" .  name . "\<m-e>", '!')
 				call feedkeys(name . "\<c-r>=UltiSnips#ExpandSnippet()\<cr>", '!')
+				" unsilent echom "col: ". col('.')
 			else
 				call feedkeys('a' . name . "\<c-r>=UltiSnips#ExpandSnippet()\<cr>", '!')
 			endif
