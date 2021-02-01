@@ -166,6 +166,18 @@ if has('nvim') && (has('win32') || has('win64'))
 endif
 
 
+"----------------------------------------------------------------------
+" Purify NVim-Qt
+"----------------------------------------------------------------------
+function! s:GuiPureNVim()
+	if has('nvim') && g:asc_gui
+		call rpcnotify(1, 'Gui', 'Option', 'Tabline', 0)
+		call rpcnotify(0, "Gui", "Option", "Popupmenu", 0)
+	endif
+endfunc
+
+command! -nargs=0 GuiPureNVim call s:GuiPureNVim()
+
 
 "----------------------------------------------------------------------
 "- Menu Setting
