@@ -140,10 +140,5 @@ let g:Lf_Extensions.snippet = {
 			\ 'after_enter': string(function('s:lf_win_init'))[10:-3],
 		\ }
 
-let g:Lf_PreviewResult = get(g:, 'Lf_PreviewResult', {})
-let g:Lf_PreviewResult.snippet = 1
-
-
-inoremap <c-\><c-\> <c-\><c-o>:Leaderf snippet<cr>
 
 
