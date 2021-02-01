@@ -95,7 +95,7 @@ function! asclib#setting#write(section, key, value)
 	if s:cfg_dirty == 0
 		augroup AsclibSettingPersist
 			au!
-			au VimLeave * call asclib#setting#cfg_save()
+			au VimLeave * call asclib#setting#save()
 		augroup END
 		let s:cfg_dirty = 1
 	endif
