@@ -50,7 +50,7 @@ endfunc
 let s:cfg_loaded = 0
 let s:cfg_config = {}
 let s:cfg_dirty = 0
-let s:cfg_name = expand('~/.vim/vim.cfg')
+let s:cfg_name = expand('~/.vim/asclib.ini')
 
 function! s:cfg_init()
 	if s:cfg_loaded == 0
@@ -64,7 +64,7 @@ function! s:cfg_init()
 	endif
 endfunc
 
-function! asclib#setting#cfg_save()
+function! asclib#setting#save()
 	call s:cfg_init()
 	try
 		call asclib#ini#save(s:cfg_name, s:cfg_config)
@@ -73,7 +73,7 @@ function! asclib#setting#cfg_save()
 	let s:cfg_dirty = 0
 endfunc
 
-function! asclib#setting#cfg_get(section, key, ...)
+function! asclib#setting#read(section, key, ...)
 	call s:cfg_init()
 	if has_key(s:cfg_config, a:section)
 		let section = s:cfg_config[a:section]
@@ -85,7 +85,7 @@ function! asclib#setting#cfg_get(section, key, ...)
 endfunc
 
 
-function! asclib#setting#cfg_set(section, key, value)
+function! asclib#setting#write(section, key, value)
 	call s:cfg_init()
 	if !has_key(s:cfg_config, a:section)
 		let s:cfg_config[a:section] = {}
