@@ -60,7 +60,7 @@ let g:asclib#python#shell_error = 0
 
 
 "----------------------------------------------------------------------
-" interfaces 
+" core python 
 "----------------------------------------------------------------------
 function! asclib#python#exec(script) abort
 	if s:py_version == 0
@@ -101,5 +101,34 @@ function! asclib#python#system(command)
 endfunc
 
 
+"----------------------------------------------------------------------
+" module manipulate
+"----------------------------------------------------------------------
+function! asclib#python#path_add(path)
+	if s:py_version == 0
+		call asclib#common#errmsg('vim does not support python')
+		return 0
+	endif
+	exec s:py_cmd "import sys, os, vim"
+	exec s:py_cmd '__pp = os.path.abspath(vim.eval("a:path"))'
+	exec s:py_cmd 'if __pp not in sys.path: sys.path.append(__pp)'
+	return 1
+endfunc
+
+function! asclib#python#reload(module_name)
+	if s:py_version == 0
+		call asclib#common#errmsg('vim does not support python')
+		return 0
+	endif
+	if s:py_version == 3
+		exec s:py_cmd 'import importlib as __imp'
+	else
+		exec s:py_cmd 'import imp as __imp'
+	endif
+	exec s:py_cmd 'import vim'
+	exec s:py_cmd 'import ' . a:module_name . ' as __mm'
+	exec s:py_cmd '__imp.reload(__mm)'
+	return 1
+endfunc
 
 
