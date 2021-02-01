@@ -11,6 +11,13 @@
 
 
 "----------------------------------------------------------------------
+" terminal return
+"----------------------------------------------------------------------
+let g:quickui#terminal#capture = []
+let g:quickui#terminal#tmpname = ''
+
+
+"----------------------------------------------------------------------
 " create a terminal popup
 "----------------------------------------------------------------------
 function! quickui#terminal#create(cmd, opts)
@@ -124,6 +131,22 @@ endfunc
 
 
 "----------------------------------------------------------------------
+" read back capture
+"----------------------------------------------------------------------
+function! s:capture_read()
+	let g:quickui#terminal#capture = []
+	if g:quickui#terminal#tmpname != ''
+		let tmpname = g:quickui#terminal#tmpname
+		let g:quickui#terminal#tmpname = ''
+		if filereadable(tmpname)
+			silent! let g:quickui#terminal#capture = readfile(tmpname)
+			call delete(tmpname)
+		endif
+	endif
+endfunc
+
+
+"----------------------------------------------------------------------
 " terminal exit_cb
 "----------------------------------------------------------------------
 function! s:vim_term_exit(job, message)
@@ -141,9 +164,11 @@ function! s:vim_popup_callback(winid, code)
 	if exists('s:current')
 		let hwnd = s:current
 		let hwnd.winid = -1
+		call s:capture_read()
 		if has_key(hwnd.opts, 'callback')
-			let F = function(hwnd.opts.callback)
-			call F(hwnd.code)
+			let l:F = function(hwnd.opts.callback)
+			call l:F(hwnd.code)
+			unlet l:F
 		endif
 	endif
 endfunc
@@ -164,9 +189,11 @@ function! s:nvim_term_exit(jobid, data, event)
 		endif
 		let hwnd.winid = -1
 		let hwnd.background = -1
+		call s:capture_read()
 		if has_key(hwnd.opts, 'callback')
-			let F = function(hwnd.opts.callback)
-			call F(hwnd.code)
+			let l:F = function(hwnd.opts.callback)
+			call l:F(hwnd.code)
+			unlet l:F
 		endif
 	endif
 endfunc
@@ -193,7 +220,70 @@ function! quickui#terminal#open(cmd, opts)
 			endif
 		endif
 	endif
+	let g:quickui#terminal#capture = []
+	let g:quickui#terminal#tmpname = ''
+	let $VIM_CAPTURE = ''
+	if has_key(opts, 'capture')
+		if opts.capture
+			if has('win32') || has('win64') || has('win95') || has('win16')
+				let tmpname = fnamemodify(tempname(), ':h') . '\quickui2.txt'
+			else
+				let tmpname = fnamemodify(tempname(), ':h') . '/quickui2.txt'
+			endif
+			let g:quickui#terminal#tmpname = tmpname
+			let $VIM_CAPTURE = tmpname
+			if filereadable(tmpname)
+				call delete(tmpname)
+			endif
+		endif
+		unlet opts['capture']
+	endif
 	return quickui#terminal#create(a:cmd, opts)
+endfunc
+
+
+"----------------------------------------------------------------------
+" dialog exit
+"----------------------------------------------------------------------
+function! s:dialog_callback(code)
+	let args = {}
+	let args.code = a:code
+	let args.capture = g:quickui#terminal#capture
+	let l:FF = function(s:dialog_cb)
+	call l:FF(args)
+	unlet l:FF
+endfunc
+
+
+"----------------------------------------------------------------------
+" open dialog for tools
+"----------------------------------------------------------------------
+function! quickui#terminal#dialog(cmd, title, w, h, ...)
+	let opts = {}
+	if a:w > 0
+		if w + 2 > &columns
+			return -1
+		endif
+		let opts.w = w
+	endif
+	if h > 0
+		if h + 4 > &lines
+			return -1
+		endif
+		let opts.h = h
+	endif
+	let opts.title = title
+	let callback = (a:0 > 0)? (a:1) : 0
+	if type(callback) == v:t_string
+		if callback != ''
+			let s:dialog_cb = callback
+			let opts.callback = function('s:dialog_callback')
+		endif
+	elseif type(callback) == v:t_func
+		let s:dialog_cb = callback
+		let opts.callback = function('s:dialog_callback')
+	endif
+	return quickui#terminal#open(cmd, opts)
 endfunc
 
 
