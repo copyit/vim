@@ -57,6 +57,7 @@ let g:asclib#python#py_ver = s:py_version
 let g:asclib#python#py_cmd = s:py_cmd
 let g:asclib#python#py_eval = s:py_eval
 let g:asclib#python#shell_error = 0
+let g:asclib#python#locate = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 
 "----------------------------------------------------------------------
