@@ -45,18 +45,47 @@ endfunc
 
 
 "----------------------------------------------------------------------
+" Query Snippets
+"----------------------------------------------------------------------
+function! UltiSnipsQuery()
+	call UltiSnips#SnippetsInCurrentScope(1)
+	let list = []
+	let size = 4
+	for [key, info] in items(g:current_ulti_dict_info)
+		if info.description == ''
+			continue
+		endif
+		let size = max([size, len(key)])
+		let list += [[key, info.description]]
+	endfor
+	call sort(list)
+	for item in list
+		let t = item[0] . repeat(' ', size - len(item[0]))
+		call extend(item, [t])
+	endfor
+	return list
+endfunc
+
+
+"----------------------------------------------------------------------
 " internal 
 "----------------------------------------------------------------------
 let s:bufid = -1
 let s:filetype = ''
 let s:accept = ''
 let s:snips = {}
+let s:is_snipmate = 0
 let g:Lf_Extensions = get(g:, 'Lf_Extensions', {})
 
 
 function! s:lf_snippet_source(...)
 	let source = []
-	let matches = SnipMateQuery('', 0)
+	let s:is_snipmate = (exists(':UltiSnipsEdit') != 2)
+	if s:is_snipmate
+		let matches = SnipMateQuery('', 0)
+	else
+		let matches = UltiSnipsQuery()
+	endif
 	let snips = {}
 	let width = 100
 	for item in matches
@@ -64,7 +93,11 @@ function! s:lf_snippet_source(...)
 		if trigger =~ '^\u'
 			continue
 		endif
-		let desc = SnipMateDescription(item[1], width)
+		if s:is_snipmate
+			let desc = SnipMateDescription(item[1], width)
+		else
+			let desc = item[1]
+		endif
 		let text = item[2] . ' ' . ' : ' . desc
 		let snips[trigger] = item[1]
 		let source += [text]
@@ -85,11 +118,19 @@ function! s:lf_snippet_accept(line, arg)
 	redraw
 	if name != ''
 		let s:accept = name . "\<Plug>snipMateTrigger"
-		if mode(1) =~ 'i'
-			call feedkeys(name . "\<Plug>snipMateTrigger", '!')
-			" call feedkeys(name . "\<c-r>=snipMate#TriggerSnippet(1)\<cr>", '!')
+		if s:is_snipmate
+			if mode(1) =~ 'i'
+				call feedkeys(name . "\<Plug>snipMateTrigger", '!')
+				" call feedkeys(name . "\<c-r>=snipMate#TriggerSnippet(1)\<cr>", '!')
+			else
+				call feedkeys('a' . name . "\<Plug>snipMateTrigger", '!')
+			endif
 		else
-			call feedkeys('a' . name . "\<Plug>snipMateTrigger", '!')
+			if mode(1) =~ 'i'
+				call feedkeys(name . "\<c-r>=UltiSnips#ExpandSnippet()\<cr>", '!')
+			else
+				call feedkeys('a' . name . "\<c-r>=UltiSnips#ExpandSnippet()\<cr>", '!')
+			endif
 		endif
 	endif
 endfunc
