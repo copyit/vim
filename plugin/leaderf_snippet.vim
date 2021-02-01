@@ -87,6 +87,7 @@ function! s:lf_snippet_accept(line, arg)
 		let s:accept = name . "\<Plug>snipMateTrigger"
 		if mode(1) =~ 'i'
 			call feedkeys(name . "\<Plug>snipMateTrigger", '!')
+			" call feedkeys(name . "\<c-r>=snipMate#TriggerSnippet(1)\<cr>", '!')
 		else
 			call feedkeys('a' . name . "\<Plug>snipMateTrigger", '!')
 		endif

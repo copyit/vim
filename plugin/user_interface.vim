@@ -82,12 +82,16 @@ function! QuickUI_Snippet()
 	let index = quickui#listbox#inputlist(source, opts)
 	let s:previous_cursor = g:quickui#listbox#cursor
 	if index >= 0 
-		return snippet[index] . "\<Plug>snipMateTrigger"
+		" return snippet[index] . "\<Plug>snipMateTrigger"
+		return snippet[index] . "\<c-r>=snipMate#TriggerSnippet(1)\<cr>"
 	endif
 	return ''
 endfunc
 
 
-imap <expr><c-x><c-h> QuickUI_Snippet()
+" imap <expr><c-x><c-h> QuickUI_Snippet()
+imap <c-x><c-h> <c-r>=QuickUI_Snippet()<cr>
+
+
 
 
