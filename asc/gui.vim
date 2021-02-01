@@ -100,6 +100,27 @@ command! -nargs=0 GuiThemeHighlight call s:GuiThemeHighlight()
 
 
 "----------------------------------------------------------------------
+" GUI detection
+"----------------------------------------------------------------------
+let g:asc_gui = 0
+
+if has('gui_running')
+	let g:asc_gui = 1
+if has('nvim')
+	if exists('g:GuiLoaded')
+		if g:GuiLoaded != 0
+			let g:asc_gui = 1
+		endif
+	elseif exists('*nvim_list_uis') && len(nvim_list_uis()) > 0
+		let uis = nvim_list_uis()[0]
+		let g:asc_gui = get(uis, 'ext_termcolors', 0)? 0 : 1
+	elseif exists("+termguicolors") && (&termguicolors) != 0
+		let g:asc_gui = 1
+	endif
+endif
+
+
+"----------------------------------------------------------------------
 "- GUI Setting
 "----------------------------------------------------------------------
 if has('gui_running')
@@ -110,6 +131,7 @@ if has('gui_running')
 	set number
 	set t_Co=256
 	let g:seoul256_background = 236
+	let g:asc_gui = 1
 	if has('win32') || has('win64') || has('win16') || has('win95')
 		language messages en
 		set langmenu=en_US
