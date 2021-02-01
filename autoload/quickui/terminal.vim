@@ -277,6 +277,9 @@ function! quickui#terminal#dialog(cmd, title, w, h, ...)
 		endif
 		let opts.h = h
 	endif
+	if a:0 > 1
+		let opts.color = a:2
+	endif
 	let opts.title = a:title
 	let l:F2 = (a:0 > 0)? (a:1) : 0
 	if type(l:F2) == v:t_string
