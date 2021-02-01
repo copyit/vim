@@ -580,18 +580,3 @@ function! quickui#utils#tools_width()
 endfunc
 
 
-"----------------------------------------------------------------------
-" extract size
-"----------------------------------------------------------------------
-function! quickui#utils#right_size(size, maxsize)
-	if type(a:size) == v:t_float
-		if a:size <= 1
-			return float2nr(a:size * a:maxsize)
-		endif
-	endif
-	let size = float2nr(a:size)
-	let size = (size > a:maxsize)? a:maxsize : size
-	return size
-endfunc
-
-

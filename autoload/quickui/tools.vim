@@ -434,3 +434,25 @@ function! quickui#tools#clever_listbox(name, content, opts)
 	call quickui#listbox#open(a:content, opts)
 endfunc
 
+
+"----------------------------------------------------------------------
+" terminal
+"----------------------------------------------------------------------
+function! quickui#tools#terminal(name)
+	if !exists('g:quickui_terminal_tools')
+		let g:quickui_terminal_tools = {}
+	endif
+	if !has_key(g:quickui_terminal_tools, a:name)
+		call quickui#utils#errmsg('ERROR: tool ' . a:name . ' not defined !')
+		return -1
+	endif
+	let tools = g:quickui_terminal_tools[a:name]
+	if !has_key(tools, 'cmd')
+		call quickui#utils#errmsg('ERROR: key cmd not present in tool ' . a:name)
+		return -1
+	endif
+	let cmd = tools.cmd
+	return 0
+endfunc
+
+
