@@ -256,15 +256,15 @@ endfunc
 
 
 "----------------------------------------------------------------------
-" open dialog for tools
+" dialog: run command line tool and capture result
+" the 5th argument is a function with a single parameter 'args',
+" where args is a tuple of (code, capture)
+" where capture is a list of text lines in the $VIM_CAPTURE file
 "----------------------------------------------------------------------
 function! quickui#terminal#dialog(cmd, title, w, h, ...)
 	let opts = {}
-	let w = 0
-	let h = 0
-	if type(a:w) == v:t_float
-		if a:w <= 1
-			let w = 
+	let w = quickui#utils#read_size(a:w, &columns)
+	let h = quickui#utils#read_size(a:h, &lines)
 	if w > 0
 		if w + 2 > &columns
 			return -1
@@ -277,18 +277,21 @@ function! quickui#terminal#dialog(cmd, title, w, h, ...)
 		endif
 		let opts.h = h
 	endif
-	let opts.title = title
-	let callback = (a:0 > 0)? (a:1) : 0
-	if type(callback) == v:t_string
-		if callback != ''
-			let s:dialog_cb = callback
+	let opts.title = a:title
+	let l:F2 = (a:0 > 0)? (a:1) : 0
+	if type(l:F2) == v:t_string
+		if l:F2 != ''
+			let s:dialog_cb = l:F2
 			let opts.callback = function('s:dialog_callback')
+			let opts.capture = 1
 		endif
-	elseif type(callback) == v:t_func
-		let s:dialog_cb = callback
+	elseif type(l:F2) == v:t_func
+		let s:dialog_cb = l:F2
 		let opts.callback = function('s:dialog_callback')
+		let opts.capture = 1
 	endif
-	return quickui#terminal#open(cmd, opts)
+	unlet l:F2
+	return quickui#terminal#open(a:cmd, opts)
 endfunc
 
 
