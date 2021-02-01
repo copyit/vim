@@ -20,6 +20,8 @@ let g:snips_author = 'skywind'
 function! s:ultisnip_init()
 	inoremap <m-e> <c-r>=UltiSnips#ExpandSnippetOrJump()<cr>
 	inoremap <m-E> <c-r>=UltiSnips#JumpBackwards()<cr>
+	inoremap <m-n> <c-r>=UltiSnips#JumpForward()<cr>
+	inoremap <m-p> <c-r>=UltiSnips#JumpBackwards()<cr>
 endfunction
 
 
