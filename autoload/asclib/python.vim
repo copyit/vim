@@ -65,15 +65,15 @@ let g:asclib#python#shell_error = 0
 function! asclib#python#exec(script) abort
 	if s:py_version == 0
 		call asclib#common#errmsg('vim does not support python')
-		return
+	else
+		exec s:py_cmd a:script
 	endif
-	exec s:py_cmd a:script
 endfunc
 
 function! asclib#python#eval(script) abort
 	if s:py_version == 0
 		call asclib#common#errmsg('vim does not support python')
-		return 0
+		return -1
 	elseif s:py_version == 2
 		return pyeval(a:script)
 	elseif s:py_version == 3
