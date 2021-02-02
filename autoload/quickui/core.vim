@@ -671,7 +671,7 @@ endfunc
 function! quickui#core#write_script(command, pause)
 	let tmpname = fnamemodify(tempname(), ':h') . '\quickui1.cmd'
 	let command = a:command
-	if s:asyncrun_windows != 0
+	if s:windows != 0
 		let lines = ["@echo off\r"]
 		let $VIM_COMMAND = a:command
 		let $VIM_PAUSE = (a:pause)? 'pause' : ''
@@ -689,7 +689,7 @@ function! quickui#core#write_script(command, pause)
 		let tmpname = fnamemodify(tempname(), ':h') . '/quickui1.sh'
 	endif
 	call writefile(lines, tmpname)
-	if s:asyncrun_windows == 0
+	if s:windows == 0
 		if exists('*setfperm')
 			silent! call setfperm(tmpname, 'rwxrwxrws')
 		endif

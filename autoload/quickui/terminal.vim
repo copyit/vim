@@ -220,6 +220,12 @@ function! quickui#terminal#open(cmd, opts)
 			endif
 		endif
 	endif
+	if has_key(opts, 'w')
+		let opts.w = quickui#utils#read_size(opts.w, &columns)
+	endif
+	if has_key(opts, 'h')
+		let opts.h = quickui#utils#read_size(opts.h, &lines)
+	endif
 	let g:quickui#terminal#capture = []
 	let g:quickui#terminal#tmpname = ''
 	let $VIM_CAPTURE = ''
@@ -263,23 +269,11 @@ endfunc
 "----------------------------------------------------------------------
 function! quickui#terminal#dialog(cmd, opts)
 	let opts = deepcopy(a:opts)
-	let path = get(opts, 'cwd', '')
 	let opts.macros = quickui#core#expand_macros()
 	if has_key(opts, 'prepare')
 		let l:F3 = function(opts.prepare)
 		call l:F3(opts)
 		unlet l:F3
-	endif
-	if path != ''
-		let previous = getcwd()
-		call quickui#core#chdir(path)
-		let macros['VIM_CWD'] = getcwd()
-		let macros['VIM_RELDIR'] = expand("%:h:.")
-		let macros['VIM_RELNAME'] = expand("%:p:.")
-		let macros['VIM_CFILE'] = expand("<cfile>")
-		let macros['VIM_DIRNAME'] = fnamemodify(macros['VIM_CWD'], ':t')
-		let macros['<cwd>'] = macros['VIM_CWD']
-		call quickui#core#chdir(previous)
 	endif
 	let command = a:cmd
 	for [key, val] in items(opts.macros)
@@ -292,11 +286,20 @@ function! quickui#terminal#dialog(cmd, opts)
 			let opts.cwd = quickui#core#string_replace(opts.cwd, replace, val)
 		endif
 	endfor
-	if has_key(opts, 'safe')
-		if opts.safe
-			let command = quickui#core#write_script(command, 0)
-		endif
+	let cwd = get(opts, 'cwd', '')
+	if cwd != ''
+		let previous = getcwd()
+		call quickui#core#chdir(cwd)
+		let opts.macros['VIM_CWD'] = getcwd()
+		let opts.macros['VIM_RELDIR'] = expand("%:h:.")
+		let opts.macros['VIM_RELNAME'] = expand("%:p:.")
+		let opts.macros['VIM_CFILE'] = expand("<cfile>")
+		let opts.macros['VIM_DIRNAME'] = fnamemodify(opts.macros['VIM_CWD'], ':t')
+		let opts.macros['<cwd>'] = opts.macros['VIM_CWD']
+		call quickui#core#chdir(previous)
 	endif
+	let pause = get(opts, 'pause', 0)
+	let command = quickui#core#write_script(command, pause)
 	if has_key(opts, 'callback')
 		let l:F2 = opts.callback
 		if type(l:F2) == v:t_string

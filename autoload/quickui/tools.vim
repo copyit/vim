@@ -469,10 +469,18 @@ function! quickui#tools#terminal(name)
 		let opts.callback = tools.callback
 	endif
 	if has_key(tools, 'prepare')
-		let opts.callback = tools.callback
+		let opts.prepare = tools.prepare
 	endif
 	if has_key(tools, 'cwd')
 		let opts.cwd = tools.cwd
+	endif
+	if has_key(tools, 'script')
+		let opts.safe = tools.script
+	endif
+	if has_key(tools, 'pause')
+		if tools.pause
+			let opts.pause = 1
+		endif
 	endif
 	call quickui#terminal#dialog(cmd, opts)
 	return 0
