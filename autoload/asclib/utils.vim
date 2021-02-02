@@ -263,13 +263,15 @@ endfunc
 "----------------------------------------------------------------------
 " open url in browser
 "----------------------------------------------------------------------
-function! asclib#utils#open_url(url, browser)
+function! asclib#utils#open_url(url, ...)
 	let url = escape(fnameescape(a:url), "%|*#")
+	let bang = (a:0 > 0)? (a:1) : ''
 	let browser = get(g:, 'asc_browser', '')
-	let browser = (a:browser != '')? (a:browser) : browser
+	let browser = (bang == '!')? '' : browser
 	if has('win32') || has('win64') || has('win16') || has('win95')
+		let browser = (browser == '')? 'start' : browser
 		silent exec '!start /b cmd /c ' . browser . ' ' . url
-		echo browser
+		" echo browser
 	elseif has('mac') || has('macunix') || has('gui_macvim')
 		let browser = (browser == '')? 'open' : browser
 		call system(browser . ' ' . url . ' &')

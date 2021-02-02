@@ -1014,22 +1014,28 @@ command! -nargs=1 LineBreaker call s:LineBreaker(<q-args>)
 
 
 "----------------------------------------------------------------------
-" browse plugin homepage
+" OpenURL
 "----------------------------------------------------------------------
-function! s:PlugBrowse()
-	if &ft != 'vim'
-		echo 'error: filetype is not vim'
-		return
+function! s:OpenURL(url, bang)
+	let url = a:url
+	if url == ''
+		let t = matchstr(getline('.'), '^\s*Plug\s*''\zs\(.\{-}\)*\ze''')
+		if t != ''
+			if t =~ '^\(http\|https\):\/\/'
+				let url = t
+			else
+				let url = 'https://github.com/' . t
+			endif
+		elseif expand('<cfile>') != ''
+			let url = expand('<cfile>')
+		endif
 	endif
-	let t = matchstr(getline('.'), '^\s*Plug\s*''\zs\(.\{-}\)*\ze''')
-	if t != ''
-		let url = 'https://github.com/' . t
-		call asclib#utils#open_url(url, '')
-	else
-		echo 'error: not find Plug ''xxx'' pattern'
+	if url != ''
+		call asclib#utils#open_url(url, a:bang)
 	endif
 endfunc
 
-command! -nargs=0 PlugBrowse call s:PlugBrowse()
+command! -nargs=* -bang OpenURL call s:OpenURL(<q-args>, '<bang>')
+command! -nargs=0 -bang PlugBrowse call s:OpenURL('', '<bang>')
 
 
