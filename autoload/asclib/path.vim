@@ -133,10 +133,12 @@ function! asclib#path#fullname(f)
 		endif
 	endif
 	let f = fnamemodify(f, ':p')
+	let limit = 1
 	if has('win32') || has('win64') || has('win16') || has('win95')
 		let f = substitute(f, "\\", '/', 'g')
+		let limit = 3
 	endif
-	if len(f) > 1
+	if len(f) > limit
 		let size = len(f)
 		if f[size - 1] == '/'
 			let f = strpart(f, 0, size - 1)

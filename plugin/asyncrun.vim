@@ -967,10 +967,11 @@ function! asyncrun#fullname(f)
 		endif
 	endif
 	let f = fnamemodify(f, ':p')
+	let limit = (s:asyncrun_windows == 0)? 1 : 3
 	if s:asyncrun_windows
 		let f = substitute(f, "\\", '/', 'g')
 	endif
-	if len(f) > 1
+	if len(f) > limit
 		let size = len(f)
 		if f[size - 1] == '/'
 			let f = strpart(f, 0, size - 1)

@@ -25,6 +25,7 @@ let g:quickui#core#has_floating = has('nvim-0.4')
 "----------------------------------------------------------------------
 " internal variables
 "----------------------------------------------------------------------
+let s:windows = has('win32') || has('win16') || has('win64') || has('win95')
 
 
 "----------------------------------------------------------------------
@@ -541,5 +542,91 @@ function! quickui#core#chdir(path)
 	endif
 	silent execute cmd . ' '. fnameescape(a:path)
 endfunc
+
+
+"----------------------------------------------------------------------
+" full file name
+"----------------------------------------------------------------------
+function! quickui#core#fullname(f)
+	let f = a:f
+	if f =~ "'."
+		try
+			redir => m
+			silent exe ':marks' f[1]
+			redir END
+			let f = split(split(m, '\n')[-1])[-1]
+			let f = filereadable(f)? f : ''
+		catch
+			let f = '%'
+		endtry
+	endif
+	if f == '%'
+		let f = expand('%')
+		if &bt == 'terminal'
+			let f = ''
+		endif
+	endif
+	let f = fnamemodify(f, ':p')
+	let limit = (s:windows == 0)? 1 : 3
+	if s:windows
+		let f = substitute(f, "\\", '/', 'g')
+	endif
+	if len(f) > limit
+		let size = len(f)
+		if f[size - 1] == '/'
+			let f = strpart(f, 0, size - 1)
+		endif
+	endif
+	return f
+endfunc
+
+
+"----------------------------------------------------------------------
+" returns nearest parent directory contains one of the markers
+"----------------------------------------------------------------------
+function! quickui#core#find_root(name, markers, strict)
+	let name = fnamemodify((a:name != '')? a:name : bufname('%'), ':p')
+	let finding = ''
+	" iterate all markers
+	for marker in a:markers
+		if marker != ''
+			" search as a file
+			let x = findfile(marker, name . '/;')
+			let x = (x == '')? '' : fnamemodify(x, ':p:h')
+			" search as a directory
+			let y = finddir(marker, name . '/;')
+			let y = (y == '')? '' : fnamemodify(y, ':p:h:h')
+			" which one is the nearest directory ?
+			let z = (strchars(x) > strchars(y))? x : y
+			" keep the nearest one in finding
+			let finding = (strchars(z) > strchars(finding))? z : finding
+		endif
+	endfor
+	if finding == ''
+		return (a:strict == 0)? fnamemodify(name, ':h') : ''
+	endif
+	let path = fnamemodify(finding, ':p')
+	let path = quickui#core#fullname(path)
+	if has('win32') || has('win16') || has('win64') || has('win95')
+		let path = substitute(path, '\/', '\', 'g')
+	endif
+	return path
+endfunc
+
+
+"----------------------------------------------------------------------
+" find project root
+"----------------------------------------------------------------------
+function! quickui#core#project_root(name, strict)
+	let markers = ['.project', '.git', '.hg', '.svn', '.root']
+	if exists('g:quickui_rootmarks')
+		let markers = g:quickui_rootmarks
+	elseif exists('g:asyncrun_rootmarks')
+		let markers = g:asyncrun_rootmarks
+	endif
+	let path = quickui#core#fullname(a:name)
+	return quickui#core#find_root(path, markers, a:strict)
+endfunc
+
 
 
