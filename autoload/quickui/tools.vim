@@ -451,7 +451,30 @@ function! quickui#tools#terminal(name)
 		call quickui#utils#errmsg('ERROR: key cmd not present in tool ' . a:name)
 		return -1
 	endif
+	let opts = {}
 	let cmd = tools.cmd
+	let w = get(g:, 'quickui_terminal_w', 80)
+	let h = get(g:, 'quickui_terminal_h', 24)
+	let opts.w = get(tools, 'w', w)
+	let opts.h = get(tools, 'h', h)
+	if has_key(tools, 'color')
+		if tools.color != ''
+			let opts.color = tools.color
+		endif
+	endif
+	if has_key(tools, 'title')
+		let opts.title = tools.title
+	endif
+	if has_key(tools, 'callback')
+		let opts.callback = tools.callback
+	endif
+	if has_key(tools, 'prepare')
+		let opts.callback = tools.callback
+	endif
+	if has_key(tools, 'cwd')
+		let opts.cwd = tools.cwd
+	endif
+	call quickui#terminal#dialog(cmd, opts)
 	return 0
 endfunc
 
