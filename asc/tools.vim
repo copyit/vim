@@ -1014,19 +1014,20 @@ command! -nargs=1 LineBreaker call s:LineBreaker(<q-args>)
 
 
 "----------------------------------------------------------------------
-" OpenURL
+" OpenURL[!] [url]
+" - open url in default browser (change this by g:browser_cmd)
+" - when bang (!) is included, ignore g:browser_cmd
+" - when url is omitted, use the current url under cursor
+" - vim-plug format "Plug 'xxx'" can also be accepted.
 "----------------------------------------------------------------------
 function! s:OpenURL(url, bang)
 	let url = a:url
 	if url == ''
 		let t = matchstr(getline('.'), '^\s*Plug\s*''\zs\(.\{-}\)*\ze''')
 		if t != ''
-			if t =~ '^\(http\|https\):\/\/'
-				let url = t
-			else
-				let url = 'https://github.com/' . t
-			endif
-		elseif expand('<cfile>') != ''
+			let github = 'https://github.com/'
+			let url = (t =~ '^\(http\|https\):\/\/')? t : (github . t)
+		else
 			let url = expand('<cfile>')
 		endif
 	endif
@@ -1037,5 +1038,7 @@ endfunc
 
 command! -nargs=* -bang OpenURL call s:OpenURL(<q-args>, '<bang>')
 command! -nargs=0 -bang PlugBrowse call s:OpenURL('', '<bang>')
+
+
 
 

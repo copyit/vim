@@ -264,7 +264,7 @@ endfunc
 " open url in browser
 "----------------------------------------------------------------------
 function! asclib#utils#open_url(url, ...)
-	let url = escape(fnameescape(a:url), "%|*#")
+	let url = escape(a:url, "%|*#")
 	let bang = (a:0 > 0)? (a:1) : ''
 	let browser = get(g:, 'asc_browser', '')
 	let browser = (bang == '!')? '' : browser
