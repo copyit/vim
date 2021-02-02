@@ -257,43 +257,27 @@ endfunc
 
 "----------------------------------------------------------------------
 " dialog: run command line tool and capture result
-" the 5th argument is a function with a single parameter 'args',
-" where args is a tuple of (code, capture)
+" the callback function changes to a new prototype:
+" function! Callback(args), where args is a tuple of (code, capture)
 " where capture is a list of text lines in the $VIM_CAPTURE file
 "----------------------------------------------------------------------
-function! quickui#terminal#dialog(cmd, title, w, h, ...)
-	let opts = {}
-	let w = quickui#utils#read_size(a:w, &columns)
-	let h = quickui#utils#read_size(a:h, &lines)
-	if w > 0
-		if w + 2 > &columns
-			return -1
-		endif
-		let opts.w = w
-	endif
-	if h > 0
-		if h + 4 > &lines
-			return -1
-		endif
-		let opts.h = h
-	endif
-	if a:0 > 1
-		let opts.color = a:2
-	endif
-	let opts.title = a:title
-	let l:F2 = (a:0 > 0)? (a:1) : 0
-	if type(l:F2) == v:t_string
-		if l:F2 != ''
+function! quickui#terminal#dialog(cmd, opts)
+	let opts = deepcopy(a:opts)
+	if has_key(opts, 'callback')
+		let l:F2 = opts.callback
+		if type(l:F2) == v:t_string
+			if l:F2 != ''
+				let s:dialog_cb = l:F2
+				let opts.callback = function('s:dialog_callback')
+				let opts.capture = 1
+			endif
+		elseif type(l:F2) == v:t_func
 			let s:dialog_cb = l:F2
 			let opts.callback = function('s:dialog_callback')
 			let opts.capture = 1
 		endif
-	elseif type(l:F2) == v:t_func
-		let s:dialog_cb = l:F2
-		let opts.callback = function('s:dialog_callback')
-		let opts.capture = 1
+		unlet l:F2
 	endif
-	unlet l:F2
 	return quickui#terminal#open(a:cmd, opts)
 endfunc
 
