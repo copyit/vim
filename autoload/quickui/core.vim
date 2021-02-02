@@ -567,15 +567,11 @@ function! quickui#core#fullname(f)
 		endif
 	endif
 	let f = fnamemodify(f, ':p')
-	let limit = (s:windows == 0)? 1 : 3
 	if s:windows
 		let f = substitute(f, "\\", '/', 'g')
 	endif
-	if len(f) > limit
-		let size = len(f)
-		if f[size - 1] == '/'
-			let f = strpart(f, 0, size - 1)
-		endif
+	if f =~ '\/$'
+		let f = fnamemodify(f, ':h')
 	endif
 	return f
 endfunc
@@ -603,12 +599,15 @@ function! quickui#core#find_root(name, markers, strict)
 		endif
 	endfor
 	if finding == ''
-		return (a:strict == 0)? fnamemodify(name, ':h') : ''
+		let path = (a:strict == 0)? fnamemodify(name, ':h') : ''
+	else
+		let path = fnamemodify(finding, ':p')
 	endif
-	let path = fnamemodify(finding, ':p')
-	let path = quickui#core#fullname(path)
 	if has('win32') || has('win16') || has('win64') || has('win95')
 		let path = substitute(path, '\/', '\', 'g')
+	endif
+	if path =~ '[\/\\]$'
+		let path = fnamemodify(path, ':h')
 	endif
 	return path
 endfunc

@@ -242,9 +242,17 @@ function! s:find_root(name, markers, strict)
 		endif
 	endfor
 	if finding == ''
-		return (a:strict == 0)? fnamemodify(name, ':h') : ''
+		let path = (a:strict == 0)? fnamemodify(name, ':h') : ''
+	else
+		let path = fnamemodify(finding, ':p')
 	endif
-	return fnamemodify(finding, ':p')
+	if has('win32') || has('win16') || has('win64') || has('win95')
+		let path = substitute(path, '\/', '\', 'g')
+	endif
+	if path =~ '[\/\\]$'
+		let path = fnamemodify(path, ':h')
+	endif
+	return path
 endfunc
 
 " find project root

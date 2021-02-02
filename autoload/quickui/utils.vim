@@ -580,3 +580,39 @@ function! quickui#utils#tools_width()
 endfunc
 
 
+"----------------------------------------------------------------------
+" expand macros
+"----------------------------------------------------------------------
+function! quickui#utils#expand_macros()
+	let macros = {}
+	let macros['VIM_FILEPATH'] = expand("%:p")
+	let macros['VIM_FILENAME'] = expand("%:t")
+	let macros['VIM_FILEDIR'] = expand("%:p:h")
+	let macros['VIM_FILENOEXT'] = expand("%:t:r")
+	let macros['VIM_PATHNOEXT'] = expand("%:p:r")
+	let macros['VIM_FILEEXT'] = "." . expand("%:e")
+	let macros['VIM_FILETYPE'] = (&filetype)
+	let macros['VIM_CWD'] = getcwd()
+	let macros['VIM_RELDIR'] = expand("%:h:.")
+	let macros['VIM_RELNAME'] = expand("%:p:.")
+	let macros['VIM_CWORD'] = expand("<cword>")
+	let macros['VIM_CFILE'] = expand("<cfile>")
+	let macros['VIM_CLINE'] = line('.')
+	let macros['VIM_VERSION'] = ''.v:version
+	let macros['VIM_SVRNAME'] = v:servername
+	let macros['VIM_COLUMNS'] = ''.&columns
+	let macros['VIM_LINES'] = ''.&lines
+	let macros['VIM_GUI'] = has('gui_running')? 1 : 0
+	let macros['VIM_ROOT'] = quickui#core#project_root('%', 0)
+	let macros['VIM_HOME'] = expand(split(&rtp, ',')[0])
+	let macros['VIM_PRONAME'] = fnamemodify(macros['VIM_ROOT'], ':t')
+	let macros['VIM_DIRNAME'] = fnamemodify(macros['VIM_CWD'], ':t')
+	let macros['<cwd>'] = macros['VIM_CWD']
+	let macros['<root>'] = macros['VIM_ROOT']
+	if expand("%:e") == ''
+		let macros['VIM_FILEEXT'] = ''
+	endif
+	return macros
+endfunc
+
+
