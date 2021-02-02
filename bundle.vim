@@ -422,6 +422,11 @@ if index(g:bundle_group, 'colors') >= 0
 	Plug 'sonph/onehalf', {'rtp': 'vim/'}
 endif
 
+if index(g:bundle_group, 'which_key') >= 0
+	Plug 'liuchengxu/vim-which-key'
+	IncScript site/bundle/which_key.vim
+endif
+
 
 "----------------------------------------------------------------------
 " packages end
