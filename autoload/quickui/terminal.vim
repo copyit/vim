@@ -263,11 +263,25 @@ endfunc
 "----------------------------------------------------------------------
 function! quickui#terminal#dialog(cmd, opts)
 	let opts = deepcopy(a:opts)
+	let path = get(opts, 'cwd', '')
+	let opts.macros = quickui#utils#expand_macros(path)
 	if has_key(opts, 'prepare')
 		let l:F3 = function(opts.prepare)
+		let previous = getcwd()
+		if path != ''
+			call quickui#core#chdir(path)
+		endif
 		call l:F3(opts)
 		unlet l:F3
+		if path != ''
+			call quickui#core#chdir(previous)
+		endif
 	endif
+	for [key, val] in items(opts.macros)
+		if key[0] != '<'
+			exec 'let $' . key . ' = val'
+		endif
+	endfor
 	if has_key(opts, 'callback')
 		let l:F2 = opts.callback
 		if type(l:F2) == v:t_string

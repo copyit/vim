@@ -616,7 +616,7 @@ endfunc
 "----------------------------------------------------------------------
 " find project root
 "----------------------------------------------------------------------
-function! quickui#core#project_root(name, strict)
+function! quickui#core#project_root(name, ...)
 	let markers = ['.project', '.git', '.hg', '.svn', '.root']
 	if exists('g:quickui_rootmarks')
 		let markers = g:quickui_rootmarks
@@ -624,7 +624,8 @@ function! quickui#core#project_root(name, strict)
 		let markers = g:asyncrun_rootmarks
 	endif
 	let path = quickui#core#fullname(a:name)
-	return quickui#core#find_root(path, markers, a:strict)
+	let strict = (a:0 > 0)? (a:1) : 0
+	return quickui#core#find_root(path, markers, strict)
 endfunc
 
 

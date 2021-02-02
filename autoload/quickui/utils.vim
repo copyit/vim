@@ -583,7 +583,7 @@ endfunc
 "----------------------------------------------------------------------
 " expand macros
 "----------------------------------------------------------------------
-function! quickui#utils#expand_macros()
+function! quickui#utils#expand_macros(cwd)
 	let macros = {}
 	let macros['VIM_FILEPATH'] = expand("%:p")
 	let macros['VIM_FILENAME'] = expand("%:t")
@@ -611,6 +611,17 @@ function! quickui#utils#expand_macros()
 	let macros['<root>'] = macros['VIM_ROOT']
 	if expand("%:e") == ''
 		let macros['VIM_FILEEXT'] = ''
+	endif
+	if a:cwd != ''
+		let previous = getcwd()
+		call quickui#core#chdir(a:cwd)
+		let macros['VIM_CWD'] = getcwd()
+		let macros['VIM_RELDIR'] = expand("%:h:.")
+		let macros['VIM_RELNAME'] = expand("%:p:.")
+		let macros['VIM_CFILE'] = expand("<cfile>")
+		let macros['VIM_DIRNAME'] = fnamemodify(macros['VIM_CWD'], ':t')
+		let macros['<cwd>'] = macros['VIM_CWD']
+		call quickui#core#chdir(previous)
 	endif
 	return macros
 endfunc
