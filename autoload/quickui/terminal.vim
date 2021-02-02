@@ -263,16 +263,21 @@ endfunc
 "----------------------------------------------------------------------
 function! quickui#terminal#dialog(cmd, opts)
 	let opts = deepcopy(a:opts)
+	if has_key(opts, 'prepare')
+		let l:F3 = function(opts.prepare)
+		call l:F3(opts)
+		unlet l:F3
+	endif
 	if has_key(opts, 'callback')
 		let l:F2 = opts.callback
 		if type(l:F2) == v:t_string
 			if l:F2 != ''
-				let s:dialog_cb = l:F2
+				let s:dialog_cb = function(l:F2)
 				let opts.callback = function('s:dialog_callback')
 				let opts.capture = 1
 			endif
 		elseif type(l:F2) == v:t_func
-			let s:dialog_cb = l:F2
+			let s:dialog_cb = function(l:F2)
 			let opts.callback = function('s:dialog_callback')
 			let opts.capture = 1
 		endif
