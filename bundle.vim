@@ -427,6 +427,11 @@ if index(g:bundle_group, 'which_key') >= 0
 	IncScript site/bundle/which_key.vim
 endif
 
+if index(g:bundle_group, 'supertab') >= 0
+	Plug 'ervandew/supertab'
+	IncScript site/bundle/supertab.vim
+endif
+
 
 "----------------------------------------------------------------------
 " packages end
