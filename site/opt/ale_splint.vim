@@ -25,7 +25,7 @@ function! s:splint_GetCommand(buffer) abort
     \   : ''
 
     return l:cd_command
-    \   . ale#Escape(s:splint_splint#GetExecutable(a:buffer))
+    \   . ale#Escape(s:splint_GetExecutable(a:buffer))
     \   . ' -showfunc -hints +quiet -parenfileformat '
     \   . l:splintrc_option
     \   . ale#Var(a:buffer, 'c_splint_options')
