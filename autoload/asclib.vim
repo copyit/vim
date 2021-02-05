@@ -98,7 +98,7 @@ function! asclib#lint_splint(filename)
 	let filename = (a:filename == '')? expand('%') : a:filename
 	let rc = asclib#path#runtime('tools/conf/splint.conf') 
 	let cmd = 'splint -f '.shellescape(rc).' '.shellescape(filename)
-	let cmd .= ' -showfunc -hints +quiet -parenfileformat '
+	let cmd .= ' -showfunc -hints +quiet -parenfileformat -linelen 999 '
 	let opt = {'auto': "make", "raw":1}
 	call vimmake#run('', opt, cmd)
 endfunc
