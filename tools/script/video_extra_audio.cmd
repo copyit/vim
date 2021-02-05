@@ -16,7 +16,7 @@ pause
 goto END
 
 :HELP
-echo usage: video_gif_to_mp4 ^<input^> [^<output^>]
+echo usage: video_extra_audio ^<input^> [^<output^>]
 
 :END
 echo.
