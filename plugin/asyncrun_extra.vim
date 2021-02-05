@@ -162,7 +162,7 @@ function! s:floaterm_close() abort
 	autocmd! close-floaterm-runner
 endfunction
 
-function! s:floaterm_run_2()
+function! s:floaterm_run_2(opts)
 	let curr_bufnr = floaterm#curr()
 	if has_key(a:opts, 'silent') && a:opts.silent == 1
 		FloatermHide!
