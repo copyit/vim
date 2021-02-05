@@ -99,7 +99,7 @@ function! asclib#lint_splint(filename)
 	let rc = asclib#path#runtime('tools/conf/splint.conf') 
 	let cmd = 'splint -f '.shellescape(rc).' '.shellescape(filename)
 	" let cmd .= ' -showfunc -hints +quiet -parenfileformat -linelen 999 '
-	let cmd .= ' -showfunc +hints +quiet -parenfileformat -linelen 999 '
+	let cmd .= ' -showfunc +quiet -parenfileformat -linelen 999 '
 	let opt = {'auto': "make", "raw":1}
 	call asyncrun#run('', opt, cmd)
 endfunc
