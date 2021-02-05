@@ -66,7 +66,7 @@ function! asclib#lint_pylint(filename)
 	let cmd = 'pylint --rcfile='.shellescape(rc).' --disable=W'
 	let cmd = cmd .' '.shellescape(filename)
 	let opt = {'auto': "make"}
-	call vimmake#run('', opt, cmd)
+	call asyncrun#run('', opt, cmd)
 endfunc
 
 " python - flake8
@@ -75,7 +75,7 @@ function! asclib#lint_flake8(filename)
 	let rc = asclib#path#runtime('tools/conf/flake8.conf') 
 	let cmd = 'flake8 --config='.shellescape(rc).' '.shellescape(filename)
 	let opt = {'auto': "make"}
-	call vimmake#run('', opt, cmd)
+	call asyncrun#run('', opt, cmd)
 endfunc
 
 " c/c++ - cppcheck
@@ -90,7 +90,7 @@ function! asclib#lint_cppcheck(filename)
 	let filename = (a:filename == '')? expand('%') : a:filename
 	let cfg = g:asclib#lint_cppcheck_parameters
 	let cmd = 'cppcheck '.cfg.' '.shellescape(filename)
-	call vimmake#run('', {'auto':'make'}, cmd)
+	call asyncrun#run('', {'auto':'make'}, cmd)
 endfunc
 
 " c - splint
@@ -100,7 +100,7 @@ function! asclib#lint_splint(filename)
 	let cmd = 'splint -f '.shellescape(rc).' '.shellescape(filename)
 	let cmd .= ' -showfunc -hints +quiet -parenfileformat -linelen 999 '
 	let opt = {'auto': "make", "raw":1}
-	call vimmake#run('', opt, cmd)
+	call asyncrun#run('', opt, cmd)
 endfunc
 
 

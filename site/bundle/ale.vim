@@ -54,6 +54,7 @@ let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
 let g:ale_c_cppcheck_options = '--inline-suppr '
 let g:ale_cpp_cppcheck_options = '--inline-suppr '
 let g:ale_lua_luacheck_options = '-d'
+let g:ale_c_splint_options = '-f '. s:lintcfg('splint.conf')
 
 " let g:ale_linters.text = ['textlint', 'write-good', 'languagetool']
 " let g:ale_linters.lua += ['luacheck']
