@@ -11,6 +11,8 @@ set "OUT=%4"
 
 call ffmpeg -i "%IN%" -ss "%2" -to "%3" -c:a copy -c:v copy "%OUT%"
 
+pause
+
 goto END
 
 :HELP
