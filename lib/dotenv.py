@@ -257,7 +257,7 @@ class DotEnvParser:
                 var_value = self._load_value(var_name, '')
                 value = value[:dollar_index] + var_value + value[var_end:]
                 start = dollar_index + len(var_value)
-        value.replace('\x00', '$')
+        value = value.replace('\x00', '$')
         return value
 
     def _escape_string (self, text):
