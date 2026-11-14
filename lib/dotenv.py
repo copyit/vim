@@ -251,12 +251,17 @@ class DotEnvParser:
                 start = dollar_index + len(var_value)
             else:
                 var_end = dollar_index + 1
-                while var_end < len(value) and (value[var_end].isalnum() or value[var_end] == '_'):
+                # expand identifier-like names only, so $100 keeps the dollar
+                if value[var_end].isalpha() or value[var_end] == '_':
                     var_end += 1
-                var_name = value[dollar_index + 1:var_end]
-                var_value = self._load_value(var_name, '')
-                value = value[:dollar_index] + var_value + value[var_end:]
-                start = dollar_index + len(var_value)
+                    while var_end < len(value) and (value[var_end].isalnum() or value[var_end] == '_'):
+                        var_end += 1
+                    var_name = value[dollar_index + 1:var_end]
+                    var_value = self._load_value(var_name, '')
+                    value = value[:dollar_index] + var_value + value[var_end:]
+                    start = dollar_index + len(var_value)
+                else:
+                    start = dollar_index + 1
         value = value.replace('\x00', '$')
         return value
 
@@ -323,15 +328,14 @@ class DotEnvParser:
     def _load_file_content (self, filename, mode = 'r'):
         if hasattr(filename, 'read'):
             try: content = filename.read()
-            except: content = None
+            except Exception: content = None
             return content
         try:
             if '~' in filename:
                 filename = os.path.expanduser(filename)
-            fp = open(filename, mode)
-            content = fp.read()
-            fp.close()
-        except:
+            with open(filename, mode) as fp:
+                content = fp.read()
+        except Exception:
             content = None
         return content
 
@@ -352,7 +356,7 @@ class DotEnvParser:
             try:
                 import locale
                 guess.append(locale.getpreferredencoding())
-            except:
+            except Exception:
                 pass
             visit = {}
             for name in guess + ['gbk', 'ascii', 'latin1']:
@@ -362,7 +366,7 @@ class DotEnvParser:
                 try:
                     text = content.decode(name)
                     break
-                except:
+                except Exception:
                     pass
             if text is None:
                 text = content.decode('utf-8', 'ignore')
@@ -413,10 +417,17 @@ class DotEnv (object):
         if not args:
             return -1
         final = self.combinate()
-        if not self._win32:
-            ep = subprocess.run(args, shell = False, env = final)
-        else:
-            ep = subprocess.run(args, shell = True, env = final)
+        try:
+            if not self._win32:
+                ep = subprocess.run(args, shell = False, env = final)
+            else:
+                ep = subprocess.run(args, shell = True, env = final)
+        except FileNotFoundError:
+            print(f'dotenv: command not found: {args[0]}', file = sys.stderr)
+            return 127
+        except PermissionError:
+            print(f'dotenv: permission denied: {args[0]}', file = sys.stderr)
+            return 126
         return ep.returncode
 
     # no return, replace the current process
@@ -425,10 +436,24 @@ class DotEnv (object):
             return -1
         final = self.combinate()
         if not self._win32:
-            os.execvpe(args[0], args, final)
+            try:
+                os.execvpe(args[0], args, final)
+            except FileNotFoundError:
+                print(f'dotenv: command not found: {args[0]}', file = sys.stderr)
+                sys.exit(127)
+            except PermissionError:
+                print(f'dotenv: permission denied: {args[0]}', file = sys.stderr)
+                sys.exit(126)
             sys.exit(0)
         else:
-            ep = subprocess.Popen(args, shell = True, env = final)
+            try:
+                ep = subprocess.Popen(args, shell = True, env = final)
+            except FileNotFoundError:
+                print(f'dotenv: command not found: {args[0]}', file = sys.stderr)
+                sys.exit(127)
+            except PermissionError:
+                print(f'dotenv: permission denied: {args[0]}', file = sys.stderr)
+                sys.exit(126)
             try:
                 ep.wait()
             except KeyboardInterrupt:
@@ -509,24 +534,24 @@ def main(argv = None):
     elif 'echo' in options:
         args = ['--echo']
     if not args:
-        print('Empty command to run, use -h for help.')
+        print('Empty command to run, use -h for help.', file = sys.stderr)
         return 1
     dotenv = DotEnv()
     if 'c' in options:
         name = options['c']
         if not name:
-            print('Config name is empty.')
+            print('Config name is empty.', file = sys.stderr)
             return 1
         if not dotenv.load_config(name):
-            print(f'Failed to load config file for name: {name}')
+            print(f'Failed to load config file for name: {name}', file = sys.stderr)
             return 1
     elif 'f' in options:
         name = options['f']
         if not name:
-            print('File name is empty.')
+            print('File name is empty.', file = sys.stderr)
             return 1
         if not dotenv.load(name):
-            print(f'Failed to load .env file: {name}')
+            print(f'Failed to load .env file: {name}', file = sys.stderr)
             return 1
     else:
         envfiles = dotenv.list_env_files(os.getcwd(), DOTENV_FILES)
