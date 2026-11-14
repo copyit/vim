@@ -434,7 +434,7 @@ class DotEnv (object):
             except KeyboardInterrupt:
                 ep.wait()
                 sys.exit(130)
-        return 0
+        return ep.returncode
 
     # enumerate all the .env files from current directory to root
     def list_env_files (self, locate, filename = '.env'):
@@ -543,7 +543,9 @@ def main(argv = None):
             for key in keys:
                 print(f'{key}={dotenv._dotenv[key]}')
             return 0
-    dotenv.exec(args)
+    code = dotenv.exec(args)
+    if code >= 0:
+        sys.exit(code)
     return 0
 
 
