@@ -428,13 +428,14 @@ class DotEnv (object):
             os.execvpe(args[0], args, final)
             sys.exit(0)
         else:
-            ep = subprocess.Popen(args, shell = True, env = final)
+            ep = subprocess.Popen(args, shell = False, env = final)
             try:
                 ep.wait()
             except KeyboardInterrupt:
                 ep.wait()
                 sys.exit(130)
-        return ep.returncode
+            sys.exit(ep.returncode)
+        return 0
 
     # enumerate all the .env files from current directory to root
     def list_env_files (self, locate, filename = '.env'):
@@ -509,24 +510,24 @@ def main(argv = None):
         args = ['--echo']
     if not args:
         print('Empty command to run, use -h for help.')
-        return 0
+        return 1
     dotenv = DotEnv()
     if 'c' in options:
         name = options['c']
         if not name:
             print('Config name is empty.')
-            return 0
+            return 1
         if not dotenv.load_config(name):
             print(f'Failed to load config file for name: {name}')
-            return 0
+            return 1
     elif 'f' in options:
         name = options['f']
         if not name:
             print('File name is empty.')
-            return 0
+            return 1
         if not dotenv.load(name):
             print(f'Failed to load .env file: {name}')
-            return 0
+            return 1
     else:
         envfiles = dotenv.list_env_files(os.getcwd(), DOTENV_FILES)
         for envfile in envfiles:
@@ -543,9 +544,7 @@ def main(argv = None):
             for key in keys:
                 print(f'{key}={dotenv._dotenv[key]}')
             return 0
-    code = dotenv.exec(args)
-    if code >= 0:
-        sys.exit(code)
+    dotenv.exec(args)
     return 0
 
 
@@ -595,7 +594,7 @@ if __name__ == '__main__':
         print(cid['KeyONE'])
         return 0
     # test5()
-    main()
+    sys.exit(main())
 
 
 
