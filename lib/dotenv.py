@@ -428,7 +428,7 @@ class DotEnv (object):
             os.execvpe(args[0], args, final)
             sys.exit(0)
         else:
-            ep = subprocess.Popen(args, shell = False, env = final)
+            ep = subprocess.Popen(args, shell = True, env = final)
             try:
                 ep.wait()
             except KeyboardInterrupt:
